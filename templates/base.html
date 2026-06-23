@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>study.net</title>
+        {% block head %}{% endblock %}
+        <style>
+            :root {
+                --bg: #0b1020;
+                --card: #121a33;
+                --text: #e8ecff;
+                --muted: #aab3da;
+                --link: #8ab4ff;
+                --line: #263155;
+            }
+            body {
+                margin: 0;
+                font-family:
+                    system-ui,
+                    Segoe UI,
+                    Roboto,
+                    Arial,
+                    sans-serif;
+                background: var(--bg);
+                color: var(--text);
+            }
+            a {
+                color: var(--link);
+                text-decoration: none;
+            }
+            header {
+                border-bottom: 1px solid var(--line);
+                background: rgba(18, 26, 51, 0.85);
+                backdrop-filter: blur(8px);
+                position: sticky;
+                top: 0;
+            }
+            .wrap {
+                max-width: 960px;
+                margin: 0 auto;
+                padding: 16px;
+            }
+            nav {
+                display: flex;
+                gap: 14px;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+            .spacer {
+                flex: 1;
+            }
+            .btn {
+                display: inline-block;
+                padding: 10px 12px;
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                background: #0f1730;
+                color: var(--text);
+            }
+            .grid {
+                display: grid;
+                grid-template-columns: 1.4fr 0.6fr;
+                gap: 16px;
+            }
+            @media (max-width: 900px) {
+                .grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+            .card {
+                background: var(--card);
+                border: 1px solid var(--line);
+                border-radius: 14px;
+                padding: 14px;
+            }
+            .muted {
+                color: var(--muted);
+            }
+            input,
+            textarea {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 10px;
+                border-radius: 10px;
+                border: 1px solid var(--line);
+                background: #0f1730;
+                color: var(--text);
+            }
+            label {
+                display: block;
+                margin: 10px 0 6px;
+                color: var(--muted);
+            }
+            h1,
+            h2,
+            h3 {
+                margin: 8px 0 10px;
+            }
+            .row {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+            .pill {
+                padding: 4px 10px;
+                border-radius: 999px;
+                border: 1px solid var(--line);
+                color: var(--muted);
+                font-size: 12px;
+            }
+            .post {
+                border-top: 1px solid var(--line);
+                padding-top: 12px;
+                margin-top: 12px;
+            }
+
+            @keyframes pageIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            body.preload main.wrap {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            body.ready main.wrap {
+                animation: pageIn 420ms ease-out both;
+            }
+        </style>
+    </head>
+    <body class="preload">
+        <header>
+            <div class="wrap">
+                <nav>
+                    <a href="/" class="btn">study.net</a>
+                    <a href="/feed/" class="btn">Feed</a>
+                    <a href="/planner/" class="btn">Planner</a>
+                    <a href="/rooms/" class="btn">Rooms</a>
+                    <a href="/notes/" class="btn">Notes</a>
+                    <a href="/qa/" class="btn">Q&A</a>
+                    {% if user.is_authenticated and user.is_staff %}
+                    <a href="/mod/reports/" class="btn">Reports</a>
+                    {% endif %}
+                    <div class="spacer"></div>
+                    {% if user.is_authenticated %}
+                    <span class="muted">Hi {{ user.safe_name }}</span>
+                    <a class="btn" href="/u/{{ user.username }}/">Profile</a>
+                    <form
+                        method="post"
+                        action="{% url 'logout' %}"
+                        style="display: inline"
+                    >
+                        {% csrf_token %}
+                        <button class="btn" type="submit">Logout</button>
+                    </form>
+                    {% else %}
+                    <a href="/accounts/login/" class="btn">Login</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </header>
+        <main class="wrap">{% block content %}{% endblock %}</main>
+        <script>
+            (function () {
+                document.addEventListener("DOMContentLoaded", function () {
+                    document.body.classList.remove("preload");
+                    document.body.classList.add("ready");
+                });
+            })();
+        </script>
+    </body>
+</html>

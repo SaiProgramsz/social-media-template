@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card" style="max-width:620px; margin: 0 auto;">
+    <h2>Block @{{ target.username }}</h2>
+    <p class="muted">Blocking hides their content from you. You can unblock later in admin for now.</p>
+    <form method="post">
+      {% csrf_token %}
+      <button class="btn" type="submit">Block</button>
+      <a class="btn" href="/u/{{ target.username }}/">Cancel</a>
+    </form>
+  </div>
+{% endblock %}
+

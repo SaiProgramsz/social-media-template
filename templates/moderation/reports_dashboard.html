@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <div class="row">
+      <h2 style="margin-right:auto">Reports</h2>
+      <span class="pill">Staff</span>
+    </div>
+    <p class="muted">Latest user reports (most recent first).</p>
+
+    {% for r in reports %}
+      <div class="post">
+        <div class="row">
+          <strong>#{{ r.id }}</strong>
+          <span class="pill">{{ r.content_type }}</span>
+          <span class="muted">obj={{ r.object_id }}</span>
+          <span class="muted">{{ r.created_at }}</span>
+          <div class="spacer"></div>
+          <span class="muted">by @{{ r.reporter.username }}</span>
+        </div>
+        <div class="muted">Reason: {{ r.reason }}</div>
+        {% if r.details %}
+          <p style="white-space: pre-wrap; margin: 8px 0 0">{{ r.details }}</p>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p class="muted">No reports yet.</p>
+    {% endfor %}
+  </div>
+{% endblock %}
+

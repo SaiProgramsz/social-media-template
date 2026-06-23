@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <div class="row">
+      <h2 style="margin-right:auto">Notes</h2>
+      {% if user.is_authenticated %}<a class="btn" href="/notes/new/">New note set</a>{% endif %}
+    </div>
+    {% for n in notes %}
+      <div class="post">
+        <a href="/notes/{{ n.id }}/"><strong>{{ n.title }}</strong></a>
+        <div class="muted">by {{ n.author.safe_name }}{% if n.subject %} · {{ n.subject }}{% endif %} · {{ n.created_at }}</div>
+      </div>
+    {% empty %}
+      <p class="muted">No notes yet.</p>
+    {% endfor %}
+  </div>
+{% endblock %}
+

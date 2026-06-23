@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <div class="row">
+      <h2 style="margin-right:auto">{{ room.title }}</h2>
+      {% if user.is_authenticated and not is_member %}
+        <a class="btn" href="/rooms/{{ room.id }}/join/">Join</a>
+      {% endif %}
+      {% if can_manage_room %}
+        <form method="post" action="/rooms/{{ room.id }}/delete/" style="display:inline">
+          {% csrf_token %}
+          <button class="btn" type="submit">Delete room</button>
+        </form>
+      {% endif %}
+      {% if user.is_authenticated %}
+        <a class="btn" href="/mod/report/?type=room&id={{ room.id }}">Report</a>
+      {% endif %}
+    </div>
+    {% if room.subject %}<div class="pill">{{ room.subject }}</div>{% endif %}
+    {% if room.description %}<p style="white-space: pre-wrap">{{ room.description }}</p>{% endif %}
+  </div>
+
+  <div class="grid" style="margin-top:16px">
+    <section class="card">
+      <div class="row">
+        <h3 style="margin-right:auto">Room chat</h3>
+        {% if user.is_authenticated and is_member %}<span class="pill">Members only</span>{% endif %}
+      </div>
+
+      {% if not user.is_authenticated %}
+        <p class="muted">Login to chat.</p>
+      {% elif not is_member %}
+        <p class="muted">Join the room to chat.</p>
+      {% else %}
+        <form method="post" action="/rooms/{{ room.id }}/message/">
+          {% csrf_token %}
+          {{ message_form.as_p }}
+          <button class="btn" type="submit">Send</button>
+        </form>
+      {% endif %}
+
+      {% for m in messages %}
+        <div class="post">
+          <div class="row">
+            <strong>{{ m.author.safe_name }}</strong>
+            <span class="muted">{{ m.created_at }}</span>
+          </div>
+          <p style="white-space: pre-wrap; margin: 8px 0 0">{{ m.text }}</p>
+        </div>
+      {% empty %}
+        <p class="muted">No messages yet.</p>
+      {% endfor %}
+    </section>
+
+    <aside class="card">
+      <h3>Pomodoro</h3>
+      {% if active_session %}
+        <div class="pill">Active</div>
+        <p class="muted" style="margin:10px 0 0">Focus {{ active_session.focus_minutes }}m · Break {{ active_session.break_minutes }}m</p>
+        {% if active_session.note %}<p style="margin:10px 0 0">{{ active_session.note }}</p>{% endif %}
+        {% if user.is_authenticated and is_member %}
+          <form method="post" action="/rooms/{{ room.id }}/pomodoro/{{ active_session.id }}/end/">
+            {% csrf_token %}
+            <button class="btn" type="submit">End session</button>
+          </form>
+        {% endif %}
+      {% else %}
+        <p class="muted">Start a focus session for everyone in the room.</p>
+        {% if not user.is_authenticated %}
+          <p class="muted">Login to start one.</p>
+        {% elif not is_member %}
+          <p class="muted">Join the room to start one.</p>
+        {% else %}
+          <form method="post" action="/rooms/{{ room.id }}/pomodoro/start/">
+            {% csrf_token %}
+            {{ pomodoro_form.as_p }}
+            <button class="btn" type="submit">Start</button>
+          </form>
+        {% endif %}
+      {% endif %}
+    </aside>
+  </div>
+{% endblock %}

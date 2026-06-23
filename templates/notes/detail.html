@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <div class="row">
+      <h2 style="margin-right:auto">{{ note.title }}</h2>
+      {% if user.is_authenticated %}
+        <a class="btn" href="/mod/report/?type=note&id={{ note.id }}">Report</a>
+      {% endif %}
+    </div>
+    <div class="muted">by {{ note.author.safe_name }}{% if note.subject %} · {{ note.subject }}{% endif %} · {{ note.created_at }}</div>
+    <hr style="border:0; border-top:1px solid var(--line); margin: 12px 0" />
+    <pre style="white-space: pre-wrap; margin:0; font-family: inherit;">{{ note.content }}</pre>
+  </div>
+{% endblock %}

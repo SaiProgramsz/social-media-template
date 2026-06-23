@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <div class="row">
+      <h2 style="margin-right:auto">Study rooms</h2>
+      {% if user.is_authenticated %}<a class="btn" href="/rooms/new/">Create room</a>{% endif %}
+    </div>
+    {% for r in rooms %}
+      <div class="post">
+        <a href="/rooms/{{ r.id }}/"><strong>{{ r.title }}</strong></a>
+        <div class="muted">{% if r.subject %}{{ r.subject }} · {% endif %}created {{ r.created_at }}</div>
+      </div>
+    {% empty %}
+      <p class="muted">No rooms yet.</p>
+    {% endfor %}
+  </div>
+{% endblock %}
+

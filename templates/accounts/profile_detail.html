@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <div class="row">
+      <div style="display:flex; gap:14px; align-items:center;">
+        {% if profile_user.profile_image %}
+          <img src="{{ profile_user.profile_image.url }}" alt="Profile picture" style="width:64px; height:64px; border-radius:16px; object-fit:cover; border:1px solid var(--line);" />
+        {% else %}
+          <div style="width:64px; height:64px; border-radius:16px; background:#0f1730; border:1px solid var(--line); display:flex; align-items:center; justify-content:center;" class="muted">
+            {{ profile_user.safe_name|slice:":1"|upper }}
+          </div>
+        {% endif %}
+        <div>
+          <h2 style="margin:0">{{ profile_user.safe_name }}</h2>
+          <div class="muted">@{{ profile_user.username }}</div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      {% if user.is_authenticated and user.username == profile_user.username %}
+        <a class="btn" href="/u/me/edit/">Edit profile</a>
+      {% elif user.is_authenticated %}
+        <a class="btn" href="/mod/block/{{ profile_user.username }}/">Block</a>
+        <a class="btn" href="/mod/report/?type=user&id={{ profile_user.id }}">Report</a>
+      {% endif %}
+    </div>
+
+    {% if profile_user.bio %}
+      <p style="white-space: pre-wrap; margin-top:12px">{{ profile_user.bio }}</p>
+    {% else %}
+      <p class="muted" style="margin-top:12px">No bio yet.</p>
+    {% endif %}
+
+    <div class="row" style="margin-top:12px">
+      {% if profile_user.school %}<span class="pill">{{ profile_user.school }}</span>{% endif %}
+      {% if profile_user.major %}<span class="pill">{{ profile_user.major }}</span>{% endif %}
+      {% if profile_user.grade_level %}<span class="pill">{{ profile_user.grade_level }}</span>{% endif %}
+    </div>
+  </div>
+{% endblock %}

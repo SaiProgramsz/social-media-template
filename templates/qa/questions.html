@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <div class="row">
+      <h2 style="margin-right:auto">Q&amp;A</h2>
+      {% if user.is_authenticated %}<a class="btn" href="/qa/ask/">Ask</a>{% endif %}
+    </div>
+    {% for q in questions %}
+      <div class="post">
+        <a href="/qa/{{ q.id }}/"><strong>{{ q.title }}</strong></a>
+        <div class="muted">by {{ q.author.safe_name }}{% if q.subject %} · {{ q.subject }}{% endif %} · {{ q.created_at }}</div>
+      </div>
+    {% empty %}
+      <p class="muted">No questions yet.</p>
+    {% endfor %}
+  </div>
+{% endblock %}
+

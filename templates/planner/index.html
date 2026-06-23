@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+  <link rel="stylesheet" href="{% static 'planner/planner.css' %}" />
+{% endblock %}
+{% block content %}
+  <div class="planner-shell" id="plannerRoot">
+    <div class="planner-orb one"></div>
+    <div class="planner-orb two"></div>
+
+    <div class="planner-top">
+      <div class="planner-brand">
+        <div class="planner-mark">AI</div>
+        <div>
+          <h1 class="planner-title">Study Planner</h1>
+          <div class="planner-subtitle">Interactive GUI powered by `study ai`, now modular inside study.net.</div>
+        </div>
+      </div>
+      <div class="planner-toolbar">
+        <button class="planner-btn ghost" type="button" id="btnImport">Import</button>
+        <button class="planner-btn ghost" type="button" id="btnExport">Export</button>
+        <button class="planner-btn ghost" type="button" id="btnSample">Sample</button>
+        <button class="planner-btn primary" type="button" id="btnGenerate">Generate</button>
+      </div>
+    </div>
+
+    <div class="planner-grid">
+      <section class="planner-card">
+        <div class="planner-top" style="padding:0 0 8px;">
+          <div>
+            <h2 class="planner-section-title">Subjects</h2>
+            <div class="planner-muted">Add subjects, weekly targets, difficulty, and optional exam dates.</div>
+          </div>
+        </div>
+        <div id="subjects" class="planner-subjects"></div>
+        <div style="margin-top:12px;">
+          <button id="btnAddSubject" class="planner-btn" type="button">+ Add subject</button>
+        </div>
+      </section>
+
+      <aside class="planner-card">
+        <h2 class="planner-section-title">Schedule</h2>
+        <div class="planner-form">
+          <label>Horizon days
+            <input id="horizonDays" class="planner-input" type="number" min="1" value="14" />
+          </label>
+          <label>Start date
+            <input id="startDate" class="planner-input" type="date" value="" />
+          </label>
+          <label>Pomodoro minutes
+            <input id="pomodoroMinutes" class="planner-input" type="number" min="15" value="50" />
+          </label>
+          <label>Break minutes
+            <input id="breakMinutes" class="planner-input" type="number" min="0" value="10" />
+          </label>
+          <label>Max switches
+            <input id="maxSwitches" class="planner-input" type="number" min="1" value="3" />
+          </label>
+          <label>Focus time
+            <select id="focusTime" class="planner-select">
+              <option value="morning">morning</option>
+              <option value="afternoon">afternoon</option>
+              <option value="evening">evening</option>
+              <option value="balanced" selected>balanced</option>
+            </select>
+          </label>
+        </div>
+
+        <h3>Weekday availability</h3>
+        <div class="planner-form two">
+          <label>Start
+            <input id="weekdayStart" class="planner-input" type="time" value="17:00" />
+          </label>
+          <label>End
+            <input id="weekdayEnd" class="planner-input" type="time" value="21:00" />
+          </label>
+        </div>
+
+        <h3>Weekend availability</h3>
+        <div class="planner-form two">
+          <label>Start
+            <input id="weekendStart" class="planner-input" type="time" value="10:00" />
+          </label>
+          <label>End
+            <input id="weekendEnd" class="planner-input" type="time" value="16:00" />
+          </label>
+        </div>
+
+        <div id="status" class="planner-status">Ready.</div>
+      </aside>
+    </div>
+
+    <div class="planner-grid" style="margin-top: 0;">
+      <section class="planner-card wide">
+        {% include "planner/_results.html" %}
+      </section>
+    </div>
+  </div>
+
+  {{ initial_payload|json_script:"plannerInitialPayload" }}
+  <form id="plannerCsrfForm" style="display:none">{% csrf_token %}</form>
+  <script src="{% static 'planner/planner.js' %}"></script>
+{% endblock %}

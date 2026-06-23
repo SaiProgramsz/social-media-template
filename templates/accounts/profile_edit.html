@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card" style="max-width:720px; margin: 0 auto;">
+    <h2>Edit profile</h2>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn" type="submit">Save</button>
+    </form>
+    <p class="muted">Tip: images are served from `media/` in DEBUG mode.</p>
+  </div>
+{% endblock %}
+

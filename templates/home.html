@@ -1,0 +1,75 @@
+{% extends "base.html" %} {% block content %}
+<div class="grid">
+    <section class="card">
+        <div class="row">
+            <h2 style="margin-right: auto">Study feed</h2>
+            {% if user.is_authenticated %}<a class="btn" href="/feed/new/"
+                >Post update</a
+            >{% endif %}
+        </div>
+        {% for p in posts %}
+        <div class="post">
+            <div class="row">
+                <strong>{{ p.author.safe_name }}</strong>
+                {% if p.subject %}<span class="pill">{{ p.subject }}</span>{%
+                endif %}
+                <span class="muted">{{ p.created_at }}</span>
+                <div class="spacer"></div>
+                {% if user.is_authenticated %} {% if user.is_staff or user.id ==
+                p.author_id %}
+                <form
+                    method="post"
+                    action="/feed/{{ p.id }}/delete/"
+                    style="display: inline"
+                >
+                    {% csrf_token %}
+                    <button class="btn" type="submit">Delete</button>
+                </form>
+                {% endif %}
+                <a class="btn" href="/mod/report/?type=post&id={{ p.id }}"
+                    >Report</a
+                >
+                {% endif %}
+            </div>
+            <p style="white-space: pre-wrap; margin: 8px 0 0">{{ p.text }}</p>
+        </div>
+        {% empty %}
+        <p class="muted">
+            No posts yet. Be the first to share what you studied.
+        </p>
+        {% endfor %}
+    </section>
+    <aside class="card">
+        <div class="row">
+            <h3 style="margin-right: auto">Study rooms</h3>
+            {% if user.is_authenticated %}<a class="btn" href="/rooms/new/"
+                >New room</a
+            >{% endif %}
+        </div>
+        {% for r in rooms %}
+        <div class="post">
+            <a href="/rooms/{{ r.id }}/"><strong>{{ r.title }}</strong></a>
+            <div class="muted">
+                {% if r.subject %}{{ r.subject }} · {% endif %}created {{
+                r.created_at }}
+            </div>
+        </div>
+        {% empty %}
+        <p class="muted">No rooms yet.</p>
+        {% endfor %}
+    </aside>
+</div>
+
+<div class="card" style="margin-top: 16px">
+    <div class="row">
+        <div>
+            <h2 style="margin: 0">Study Planner</h2>
+            <div class="muted">
+                Generate a study schedule with the modular `study ai` engine.
+            </div>
+        </div>
+        <div class="spacer"></div>
+        <a class="btn" href="/planner/">Open planner</a>
+    </div>
+</div>
+{% endblock %}
